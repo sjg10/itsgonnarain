@@ -7,6 +7,7 @@
   <script src="{% static 'itsgonnarain/itsgonnarain.js' %}" track="{% static 'itsgonnarain/gandalf.wav' %}"></script>
 <body onload='getMusic("{% static 'itsgonnarain/gandalf.wav' %}")'>
 <p> It's gonna rain </p>
+<p id=pPlaybackTime>0:00/0:00</p>
 <button id='btnPlay' type="button" disabled onclick='startMusic()'>Loading</button>
 <button id='btnStop' type="button" disabled onclick='stopMusic()'>Stop</button>
 </body>
