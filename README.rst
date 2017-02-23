@@ -1,6 +1,6 @@
-=====
-Polls
-=====
+==============
+Its Gonna Rain
+==============
 
 itsgonnarain is a Django app that manages music content and a JS
 application for mixing it like in Brian Eno's itsgonnarain.
@@ -29,3 +29,12 @@ Quick start
    to add music (you'll need the Admin app enabled).
 
 5. Visit http://127.0.0.1:8000/itsgonnarain/ to run.
+
+Tasks
+-----
+
+- Add a way of user programmable ratio/time loop
+- Play full audio clip before loop
+- Move audio clips to DB and have a selection of them
+- Allow user to upload a temporary clip for themselves
+- Pretty-ify
