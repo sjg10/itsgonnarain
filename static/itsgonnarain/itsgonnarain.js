@@ -1,29 +1,41 @@
 console.log("It's gonna rain");
 let audioContext = new AudioContext();
-let audioTrack = document.currentScript.getAttribute('track');
-console.log(audioTrack)
+let sourceNode = ['', '']
 
-function startLoop(audioBuffer, pan = 0, rate = 1) {
-  let sourceNode = audioContext.createBufferSource();
-  let pannerNode = audioContext.createStereoPanner();
-  sourceNode.buffer = audioBuffer;
-  sourceNode.loop = true;
-  sourceNode.loopStart = 6.8;
-  sourceNode.loopEnd = 10;
-  sourceNode.playbackRate.value = rate;
-  pannerNode.pan.value = pan;
-
-  sourceNode.connect(pannerNode);
-  pannerNode.connect(audioContext.destination);
-  sourceNode.start(0, 6.8);
+ChannelEnum = {
+	    LEFT : 0,
+	    RIGHT : 1,
 }
 
-fetch(audioTrack)
-  .then(response => response.arrayBuffer())
-  .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-  .then( audioBuffer =>
-  {
-    startLoop(audioBuffer, -1);
-    startLoop(audioBuffer, 1, 1.002);
-   })
-  .catch(e => console.error(e));
+
+function startLoop(audioBuffer, pan = ChannelEnum.LEFT, rate = 1) {
+  sourceNode[pan] = audioContext.createBufferSource();
+  let pannerNode = audioContext.createStereoPanner();
+  sourceNode[pan].buffer = audioBuffer;
+  sourceNode[pan].loop = true;
+  sourceNode[pan].loopStart = 6.8;
+  sourceNode[pan].loopEnd = 10;
+  sourceNode[pan].playbackRate.value = rate;
+  pannerNode.pan.value = (pan == ChannelEnum.LEFT) ? -1 : 1;
+
+  sourceNode[pan].connect(pannerNode);
+  pannerNode.connect(audioContext.destination);
+  sourceNode[pan].start(0, 6.8);
+}
+
+function stopLoop() {
+	sourceNode[ChannelEnum.LEFT].stop()
+	sourceNode[ChannelEnum.RIGHT].stop()
+}
+
+function playMusic(audioTrack) {
+  fetch(audioTrack)
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+    .then( audioBuffer =>
+    {
+      startLoop(audioBuffer, ChannelEnum.LEFT);
+      startLoop(audioBuffer, ChannelEnum.RIGHT, 1.002);
+     })
+    .catch(e => console.error(e));
+}
