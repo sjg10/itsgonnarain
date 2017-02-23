@@ -3,7 +3,7 @@ Its Gonna Rain
 ==============
 
 itsgonnarain is a Django app that manages music content and a JS
-application for mixing it like in Brian Eno's itsgonnarain.
+application for mixing it like in Steve Reich's itsgonnarain.
 
 For more info see https://teropa.info/blog/2016/07/28/javascript-systems-music.html
 
