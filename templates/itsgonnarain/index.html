@@ -5,8 +5,9 @@
   <script src="https://cdn.rawgit.com/mohayonao/web-audio-api-shim/master/build/web-audio-api-shim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.min.js"></script>
   <script src="{% static 'itsgonnarain/itsgonnarain.js' %}" track="{% static 'itsgonnarain/gandalf.wav' %}"></script>
+<body onload='getMusic("{% static 'itsgonnarain/gandalf.wav' %}")'>
 <p> It's gonna rain </p>
-<button type="button" onclick='playMusic("{% static 'itsgonnarain/gandalf.wav' %}")'>Play</button>
-<button type="button" onclick='stopLoop()'>Stop</button>
+<button id='btnPlay' type="button" disabled onclick='startMusic()'>Loading</button>
+<button id='btnStop' type="button" disabled onclick='stopMusic()'>Stop</button>
 </body>
 </html>

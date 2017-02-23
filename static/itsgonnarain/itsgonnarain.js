@@ -1,5 +1,7 @@
 console.log("It's gonna rain");
 let audioContext = new AudioContext();
+let gAudioBuffer = ''
+let loaded = false
 let sourceNode = ['', '']
 
 ChannelEnum = {
@@ -23,19 +25,29 @@ function startLoop(audioBuffer, pan = ChannelEnum.LEFT, rate = 1) {
   sourceNode[pan].start(0, 6.8);
 }
 
-function stopLoop() {
-	sourceNode[ChannelEnum.LEFT].stop()
-	sourceNode[ChannelEnum.RIGHT].stop()
+function startMusic() {
+      	document.getElementById("btnPlay").disabled = true;
+	startLoop(gAudioBuffer, ChannelEnum.LEFT);
+	startLoop(gAudioBuffer, ChannelEnum.RIGHT, 1.002);
+      	document.getElementById("btnStop").disabled = false;
 }
 
-function playMusic(audioTrack) {
+function stopMusic() {
+      	document.getElementById("btnStop").disabled = true;
+	sourceNode[ChannelEnum.LEFT].stop()
+	sourceNode[ChannelEnum.RIGHT].stop()
+      	document.getElementById("btnPlay").disabled = false;
+}
+
+function getMusic(audioTrack) {
   fetch(audioTrack)
     .then(response => response.arrayBuffer())
     .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
     .then( audioBuffer =>
     {
-      startLoop(audioBuffer, ChannelEnum.LEFT);
-      startLoop(audioBuffer, ChannelEnum.RIGHT, 1.002);
+	gAudioBuffer = audioBuffer;
+      document.getElementById("btnPlay").disabled = false;
+      document.getElementById("btnPlay").innerHTML = "Play";
      })
     .catch(e => console.error(e));
 }
