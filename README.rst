@@ -44,8 +44,6 @@ Visit http://itsgonnarain.gonshaw.com for an example usage of this app.
 Tasks
 -----
 
-- Add a way of user programmable ratio/time loop
 - Play full audio clip before loop
-- Move audio clips to DB and have a selection of them
 - Allow user to upload a temporary clip for themselves
 - Pretty-ify
