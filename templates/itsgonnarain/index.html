@@ -6,11 +6,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.min.js"></script>
   <script src="{% static 'itsgonnarain/itsgonnarain.js' %}" track="{% static 'itsgonnarain/gandalf.wav' %}"></script>
 <p> It's gonna rain </p>
+Track: <select id="selTrack">
+    <option value="{% static 'itsgonnarain/gandalf.wav' %}">gandalf.wav</option>
+</select><br>
 Start Time (s):<input type="text" id="txtStart" value="6.8"><br>
 End Time (s):<input type="text" id="txtEnd" value="8.84"><br>
 Ratio (s):<input type="text" id="txtRatio" value="1.002"><br>
 <p id=pError></p>
-<button id='btnLoad' type="button" onclick='getMusic("{% static 'itsgonnarain/gandalf.wav' %}")'>Load</button>
+<button id='btnLoad' type="button" onclick='getMusic()'>Load</button>
 <p id=pPlaybackTime>0:00/0:00</p>
 <button id='btnPlay' type="button" disabled onclick='startMusic()'>Play</button>
 <button id='btnStop' type="button" disabled onclick='stopMusic()'>Stop</button>

@@ -160,9 +160,14 @@ function stopMusic() {
  * Also unmasks play button when loaded
  * @param {String} URI to fetch
  */
-function getMusic(audioTrack) {
+function getMusic() {
     document.getElementById("btnLoad").disabled = "true";
     document.getElementById("btnLoad").innerHTML = "Loading...";
+    audioTrack = document.getElementById("selTrack").value;
+    document.getElementById("txtRatio").disabled = true;
+    document.getElementById("txtStart").disabled = true;
+    document.getElementById("txtEnd").disabled = true;
+    document.getElementById("selTrack").disabled = true;
     ratio = Number(document.getElementById("txtRatio").value);
     timeStart = Number(document.getElementById("txtStart").value);
     timeEnd = Number(document.getElementById("txtEnd").value);
@@ -171,6 +176,10 @@ function getMusic(audioTrack) {
     console.log(timeEnd);
     if(isNaN(ratio) || isNaN(timeStart) || isNaN(timeEnd)) {
         document.getElementById("pError").innerHTML = "Error: please input valid numbers.";
+        document.getElementById("txtRatio").disabled = false;
+        document.getElementById("txtStart").disabled = false;
+        document.getElementById("txtEnd").disabled = false;
+        document.getElementById("selTrack").disabled = false;
         document.getElementById("btnLoad").disabled = false;
         document.getElementById("btnLoad").innerHTML = "Load";
     }
