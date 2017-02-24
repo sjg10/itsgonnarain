@@ -74,7 +74,7 @@ function gcd(x, y) {
  * Updates the trackLength global based on ratio, timeEnd and timeStart
  */
 function setTrackLength() {
-	trackLength = Math.floor((lcm(1000, ratio * 1000) * (timeEnd - timeStart)) / 1000)
+	trackLength = Math.floor(((lcm(1000, ratio * 1000) * (timeEnd - timeStart)) / 1000) + timeStart)
 }
 
 
@@ -96,7 +96,7 @@ function startLoop(pan = ChannelEnum.LEFT, rate = 1) {
 
   sourceNode[pan].connect(pannerNode);
   pannerNode.connect(audioContext.destination);
-  sourceNode[pan].start(0, 6.8);
+  sourceNode[pan].start(0, 0);
 }
 
 /**
