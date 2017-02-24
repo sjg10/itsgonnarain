@@ -132,8 +132,8 @@ function playbackTick() {
  */
 function startMusic() {
       	document.getElementById("btnPlay").disabled = true;
-	startLoop(gAudioBuffer, ChannelEnum.LEFT);
-	startLoop(gAudioBuffer, ChannelEnum.RIGHT, ratio);
+	startLoop(ChannelEnum.LEFT);
+	startLoop(ChannelEnum.RIGHT, ratio);
       	document.getElementById("btnStop").disabled = false;
 	musicPlaying = true;
 	playbackTick.time = 0;
@@ -147,7 +147,7 @@ function startMusic() {
  * Ends the timer
  */
 function stopMusic() {
-      	document.getElementById("btnStop").disabled = true;
+    document.getElementById("btnStop").disabled = true;
 	sourceNode[ChannelEnum.LEFT].stop()
 	sourceNode[ChannelEnum.RIGHT].stop()
 	musicPlaying = false;
