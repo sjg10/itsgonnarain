@@ -152,7 +152,7 @@ function stopMusic() {
 	sourceNode[ChannelEnum.RIGHT].stop()
 	musicPlaying = false;
 	clearInterval(playbackTick.interval);
-      	document.getElementById("btnPlay").disabled = false;
+    document.getElementById("btnPlay").disabled = false;
 }
 
 /**
@@ -161,16 +161,37 @@ function stopMusic() {
  * @param {String} URI to fetch
  */
 function getMusic(audioTrack) {
-  fetch(audioTrack)
-    .then(response => response.arrayBuffer())
-    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-    .then( audioBuffer =>
-    {
-      gAudioBuffer = audioBuffer;
-      setTrackLength();
-      updateTimer(0);
-      document.getElementById("btnPlay").disabled = false;
-      document.getElementById("btnPlay").innerHTML = "Play";
-     })
-    .catch(e => console.error(e));
+    document.getElementById("btnLoad").disabled = "true";
+    document.getElementById("btnLoad").innerHTML = "Loading...";
+    ratio = Number(document.getElementById("txtRatio").value);
+    timeStart = Number(document.getElementById("txtStart").value);
+    timeEnd = Number(document.getElementById("txtEnd").value);
+    console.log(ratio);
+    console.log(timeStart);
+    console.log(timeEnd);
+    if(isNaN(ratio) || isNaN(timeStart) || isNaN(timeEnd)) {
+        document.getElementById("pError").innerHTML = "Error: please input valid numbers.";
+        document.getElementById("btnLoad").disabled = false;
+        document.getElementById("btnLoad").innerHTML = "Load";
+    }
+    else {
+        fetch(audioTrack)
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then( audioBuffer =>
+            {
+                gAudioBuffer = audioBuffer;
+                setTrackLength();
+                updateTimer(0);
+                document.getElementById("btnLoad").innerHTML = "Loaded.";
+                document.getElementById("btnPlay").disabled = false;
+            })
+            .catch(e => 
+            {
+                document.getElementById("pError").innerHTML = "Error loading track. Could not upload.";
+                console.error(e);
+                document.getElementById("btnLoad").disabled = false;
+                document.getElementById("btnLoad").innerHTML = "Load";
+            })
+    }
 }
