@@ -171,9 +171,6 @@ function getMusic() {
     ratio = Number(document.getElementById("txtRatio").value);
     timeStart = Number(document.getElementById("txtStart").value);
     timeEnd = Number(document.getElementById("txtEnd").value);
-    console.log(ratio);
-    console.log(timeStart);
-    console.log(timeEnd);
     if(isNaN(ratio) || isNaN(timeStart) || isNaN(timeEnd)) {
         document.getElementById("pError").innerHTML = "Error: please input valid numbers.";
         document.getElementById("txtRatio").disabled = false;

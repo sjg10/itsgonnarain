@@ -6,16 +6,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.min.js"></script>
   <script src="{% static 'itsgonnarain/itsgonnarain.js' %}" track="{% static 'itsgonnarain/gandalf.wav' %}"></script>
 <p> It's gonna rain </p>
-Track: <select id="selTrack">
-    <option value="{% static 'itsgonnarain/gandalf.wav' %}">gandalf.wav</option>
+{% with tracks|first as defaulttrack %}
+Track:
+<!-- TODO: add method to ensure recommended values change on selTrack onchange -->
+<select id="selTrack" selected={{ defaulttrack.sound_file.url }}>
+{% for track in tracks %}
+    <option value="{{track.sound_file.url}}">{{ track.name }}</option>
+{% endfor %}
 </select><br>
-Start Time (s):<input type="text" id="txtStart" value="6.8"><br>
-End Time (s):<input type="text" id="txtEnd" value="8.84"><br>
-Ratio (s):<input type="text" id="txtRatio" value="1.002"><br>
+Start Time (s):<input type="text" id="txtStart" value="{{defaulttrack.recommended_start_time}}"><br>
+End Time (s):<input type="text" id="txtEnd" value="{{defaulttrack.recommended_end_time}}"><br>
+Ratio (s):<input type="text" id="txtRatio" value="{{defaulttrack.recommended_ratio}}"><br>
+{% endwith %}
 <p id=pError></p>
 <button id='btnLoad' type="button" onclick='getMusic()'>Load</button>
 <p id=pPlaybackTime>0:00/0:00</p>
 <button id='btnPlay' type="button" disabled onclick='startMusic()'>Play</button>
 <button id='btnStop' type="button" disabled onclick='stopMusic()'>Stop</button>
+
 </body>
 </html>
