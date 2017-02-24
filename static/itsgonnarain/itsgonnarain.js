@@ -18,10 +18,27 @@ let timeStart = 6.8;
 // The time ofset to end the looping within the audio
 let timeEnd = 8.84;
 
+// Grabs the expected json of tracks
+let tracks = JSON.parse(trackJSON);
+console.log(tracks)
+console.log(tracks[0].pk)
+
 // An enum for left and right
 ChannelEnum = {
 	    LEFT : 0,
 	    RIGHT : 1,
+}
+
+/**
+ * Gets a track object as supplied by django, given a key id
+ * @param {Number} pk the id
+ * @return {Object} the track onject
+ */
+function getTrackFromPK(pk) {
+    function getPK(track) {
+        return track.pk == pk;
+    }
+    return tracks.find(getPK);
 }
 
 /**
@@ -163,7 +180,8 @@ function stopMusic() {
 function getMusic() {
     document.getElementById("btnLoad").disabled = "true";
     document.getElementById("btnLoad").innerHTML = "Loading...";
-    audioTrack = document.getElementById("selTrack").value;
+    trackObject = getTrackFromPK(document.getElementById("selTrack").value);
+    audioTrack = trackObject.fields.sound_file;
     document.getElementById("txtRatio").disabled = true;
     document.getElementById("txtStart").disabled = true;
     document.getElementById("txtEnd").disabled = true;
@@ -194,10 +212,21 @@ function getMusic() {
             })
             .catch(e => 
             {
-                document.getElementById("pError").innerHTML = "Error loading track. Could not upload.";
+                document.getElementById("pError").innerHTML = "Error loading track. Could not download.";
                 console.error(e);
                 document.getElementById("btnLoad").disabled = false;
                 document.getElementById("btnLoad").innerHTML = "Load";
             })
     }
+}
+
+/**
+ * Update the txtRatio, txtStartTime and txtEndTime values
+ * to the recommended value for the track selected in selTrack
+ */ 
+function selectChange(element) {
+    trackObject = getTrackFromPK(document.getElementById("selTrack").value);
+    document.getElementById("txtRatio").value = trackObject.fields.recommended_ratio;
+    document.getElementById("txtStart").value = trackObject.fields.recommended_start_time;
+    document.getElementById("txtEnd").value = trackObject.fields.recommended_end_time;
 }
