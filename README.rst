@@ -36,6 +36,11 @@ Quick start
 
 #. Visit http://127.0.0.1:8000/itsgonnarain/ to run.
 
+Example Use
+-----------
+
+Visit http://itsgonnarain.gonshaw.com for an example usage of this app.
+
 Tasks
 -----
 
