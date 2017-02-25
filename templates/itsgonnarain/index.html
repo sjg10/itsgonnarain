@@ -3,7 +3,7 @@
 {% load static %}
 {% load js %}
 <body>
-<p> It's gonna rain </p>
+    <p> <b>It's gonna rain</b> </p>
 {% with tracks|first as defaulttrack %}
 Track:
 <!-- TODO: add method to ensure recommended values change on selTrack onchange -->
@@ -20,8 +20,8 @@ Start Time (s):<input type="text" id="txtStart" value="{{defaulttrack.recommende
 End Time (s):<input type="text" id="txtEnd" value="{{defaulttrack.recommended_end_time}}"><br>
 Ratio (s):<input type="text" id="txtRatio" value="{{defaulttrack.recommended_ratio}}"><br>
 {% endwith %}
-<p id=pError></p>
 <button id='btnLoad' type="button" onclick='getMusic()'>Load</button>
+<p id=pTrack><br></p>
 <p id=pPlaybackTime>0:00/0:00</p>
 <button id='btnPlay' type="button" disabled onclick='startMusic()'>Play</button>
 <button id='btnStop' type="button" disabled onclick='stopMusic()'>Stop</button>

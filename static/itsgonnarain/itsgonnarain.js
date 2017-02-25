@@ -2,8 +2,6 @@
 let audioContext = new AudioContext();
 // The global buffer that will contain an audio track
 let gAudioBuffer = ''
-// The global loaded boolean that goes true when gAudioBuffer has loaded
-let loaded = false
 // The global nodes for each track (left and right)
 let sourceNode = ['', '']
 // The global boolean to see if a track is currently playing
@@ -20,8 +18,6 @@ let timeEnd = 8.84;
 
 // Grabs the expected json of tracks
 let tracks = JSON.parse(trackJSON);
-console.log(tracks)
-console.log(tracks[0].pk)
 
 // An enum for left and right
 ChannelEnum = {
@@ -148,6 +144,7 @@ function playbackTick() {
  * Starts the timer
  */
 function startMusic() {
+    toggleEnableInput(false, "Playing...");
       	document.getElementById("btnPlay").disabled = true;
 	startLoop(ChannelEnum.LEFT);
 	startLoop(ChannelEnum.RIGHT, ratio);
@@ -170,6 +167,20 @@ function stopMusic() {
 	musicPlaying = false;
 	clearInterval(playbackTick.interval);
     document.getElementById("btnPlay").disabled = false;
+    toggleEnableInput(true);
+}
+
+/**
+ * TODO: comment
+ */
+function toggleEnableInput(enable = true, loadButtonString = "Loading...")
+{
+    document.getElementById("txtRatio").disabled = !enable;
+    document.getElementById("txtStart").disabled = !enable;
+    document.getElementById("txtEnd").disabled = !enable;
+    document.getElementById("selTrack").disabled = !enable;
+    document.getElementById("btnLoad").disabled = !enable;
+    document.getElementById("btnLoad").innerHTML = enable ? "Load" : loadButtonString;
 }
 
 /**
@@ -178,31 +189,24 @@ function stopMusic() {
  * @param {String} URI to fetch
  */
 function getMusic() {
-    document.getElementById("btnLoad").disabled = "true";
-    document.getElementById("btnLoad").innerHTML = "Loading...";
-    document.getElementById("pError").innerHTML = "";
+    let trackName = ''
+    toggleEnableInput(false);
+    document.getElementById("pTrack").innerHTML = "<br>";
+    trackObject = getTrackFromPK(document.getElementById("selTrack").value);
     if (typeof trackObject != 'undefined') { // i.e. couldn't find the pk i.e not a db elt-must be upload
-        trackObject = getTrackFromPK(document.getElementById("selTrack").value);
         audioTrack = trackObject.fields.sound_file;
+        trackName = trackObject.fields.name;
     }
     else {
         audioTrack = document.getElementById("fileOpt").value;
+        trackName = "(Upload) " + document.getElementById("fileOpt").files[0].name;
     }
-    document.getElementById("txtRatio").disabled = true;
-    document.getElementById("txtStart").disabled = true;
-    document.getElementById("txtEnd").disabled = true;
-    document.getElementById("selTrack").disabled = true;
     ratio = Number(document.getElementById("txtRatio").value);
     timeStart = Number(document.getElementById("txtStart").value);
     timeEnd = Number(document.getElementById("txtEnd").value);
     if(isNaN(ratio) || isNaN(timeStart) || isNaN(timeEnd)) {
-        document.getElementById("pError").innerHTML = "Error: please input valid numbers.";
-        document.getElementById("txtRatio").disabled = false;
-        document.getElementById("txtStart").disabled = false;
-        document.getElementById("txtEnd").disabled = false;
-        document.getElementById("selTrack").disabled = false;
-        document.getElementById("btnLoad").disabled = false;
-        document.getElementById("btnLoad").innerHTML = "Load";
+        document.getElementById("pTrack").innerHTML = "Error: please input valid numbers.";
+        toggleEnableInput(true);
     }
     else {
         //TODO: use filereader instead of fetch on upload
@@ -214,18 +218,15 @@ function getMusic() {
                 gAudioBuffer = audioBuffer;
                 setTrackLength();
                 updateTimer(0);
-                document.getElementById("btnLoad").innerHTML = "Loaded.";
+                document.getElementById("pTrack").innerHTML = "Loaded: " + trackName + " - (" +
+                    timeStart + "s-" + timeEnd + "s), ratio=" + ratio;
                 document.getElementById("btnPlay").disabled = false;
+                toggleEnableInput(true);
             })
             .catch(e => 
             {
-                document.getElementById("pError").innerHTML = "Error loading track. Could not download.";
-                document.getElementById("txtRatio").disabled = false;
-                document.getElementById("txtStart").disabled = false;
-                document.getElementById("txtEnd").disabled = false;
-                document.getElementById("selTrack").disabled = false;
-                document.getElementById("btnLoad").disabled = false;
-                document.getElementById("btnLoad").innerHTML = "Load";
+                document.getElementById("pTrack").innerHTML = "Error loading track. Could not download.";
+                toggleEnableInput(true);
                 console.error(e);
             })
     }
