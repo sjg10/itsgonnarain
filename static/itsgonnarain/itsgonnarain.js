@@ -184,10 +184,33 @@ function toggleEnableInput(enable = true, loadButtonString = "Loading...")
     document.getElementById("btnLoad").disabled = !enable;
     document.getElementById("btnLoad").innerHTML = enable ? "Load" : loadButtonString;
 }
+/**
+ * Given a prepare array buffer loads the audio to gAudioBuffer and unmasks play button when loaded
+ * @param {ArrayBuffer} An array buffer containing an audio file (e.g. wav,mp3)
+ * @param {itrackName} String name of the track
+ */
+function loadMusic(arrayBuffer, trackName) {
+    audioContext.decodeAudioData(arrayBuffer)
+        .then( audioBuffer =>
+        {
+            gAudioBuffer = audioBuffer;
+            setTrackLength();
+            updateTimer(0);
+            document.getElementById("pTrack").innerHTML = "Loaded: " + trackName + " - (" +
+                timeStart + "s-" + timeEnd + "s), ratio=" + ratio;
+            document.getElementById("btnPlay").disabled = false;
+            toggleEnableInput(true);
+        })
+        .catch(e => 
+        {
+            document.getElementById("pTrack").innerHTML = "Error loading track.";
+            toggleEnableInput(true);
+            console.error(e);
+        })
+}
 
 /**
- * Fetches an audio track to gAudioBuffer and updates loaded global when loaded.
- * Also unmasks play button when loaded
+ * Parses the input on a load request and fetches an audio track to be loaded by loadMusic
  * @param {String} URI to fetch
  */
 function getMusic() {
@@ -200,7 +223,7 @@ function getMusic() {
         trackName = trackObject.fields.name;
     }
     else {
-        audioTrack = document.getElementById("fileOpt").value;
+        audioTrack = document.getElementById("fileOpt").files[0];
         trackName = "(Upload) " + document.getElementById("fileOpt").files[0].name;
     }
     ratio = Number(document.getElementById("txtRatio").value);
@@ -211,26 +234,16 @@ function getMusic() {
         toggleEnableInput(true);
     }
     else {
-        //TODO: use filereader instead of fetch on upload
-        fetch(audioTrack)
-            .then(response => response.arrayBuffer())
-            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-            .then( audioBuffer =>
-            {
-                gAudioBuffer = audioBuffer;
-                setTrackLength();
-                updateTimer(0);
-                document.getElementById("pTrack").innerHTML = "Loaded: " + trackName + " - (" +
-                    timeStart + "s-" + timeEnd + "s), ratio=" + ratio;
-                document.getElementById("btnPlay").disabled = false;
-                toggleEnableInput(true);
-            })
-            .catch(e => 
-            {
-                document.getElementById("pTrack").innerHTML = "Error loading track. Could not download.";
-                toggleEnableInput(true);
-                console.error(e);
-            })
+        if (typeof trackObject != 'undefined') { // i.e. not an upload
+            fetch(audioTrack)
+                .then(response => response.arrayBuffer())
+                .then(arrayBuffer => loadMusic(arrayBuffer, trackName));
+        }
+        else {
+            fr = new FileReader();
+            fr.onload = function(e) { loadMusic(fr.result, trackName); }
+            fr.readAsArrayBuffer(audioTrack);
+        }
     }
 }
 
@@ -258,6 +271,7 @@ function selectChange() {
 
 /**
  * Event handler when a file is chosen to update the associated text.
+ * TODO: allow reupload when rechosen
  */
 function fileChosen() {
         document.getElementById("txtFile").innerHTML = "File: " + document.getElementById("fileOpt").files[0].name;

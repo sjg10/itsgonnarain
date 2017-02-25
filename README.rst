@@ -45,6 +45,5 @@ Tasks
 -----
 
 - Add admin model for input checking and prettyness on admin
-- Add checking for start time/end time bounds
-- Allow user to upload a temporary clip for themselves
+- Add checking for inputs on runtime too
 - Pretty-ify
