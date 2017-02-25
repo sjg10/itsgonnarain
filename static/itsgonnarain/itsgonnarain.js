@@ -272,7 +272,11 @@ function selectChange() {
 /**
  * Event handler when a file is chosen to update the associated text.
  * TODO: allow reupload when rechosen
+ * TODO: handle no file chosen
  */
 function fileChosen() {
-        document.getElementById("txtFile").innerHTML = "File: " + document.getElementById("fileOpt").files[0].name;
+    let fileName = '';
+    file = document.getElementById("fileOpt").files[0]
+    fileName = document.getElementById("fileOpt").files[0].name
+    document.getElementById("txtFile").innerHTML = "File: " + fileName;
 }
