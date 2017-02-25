@@ -11,7 +11,11 @@ Track:
 {% for track in tracks %}
     <option value="{{track.pk}}">{{ track.name }}</option>
 {% endfor %}
-</select><br>
+    <option value="upload">Upload...</option>
+</select>
+<a id='txtFile'></a>
+<br>
+<input type='file' id='fileOpt' style="display:none" onchange='fileChosen()'>
 Start Time (s):<input type="text" id="txtStart" value="{{defaulttrack.recommended_start_time}}"><br>
 End Time (s):<input type="text" id="txtEnd" value="{{defaulttrack.recommended_end_time}}"><br>
 Ratio (s):<input type="text" id="txtRatio" value="{{defaulttrack.recommended_ratio}}"><br>

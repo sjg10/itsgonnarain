@@ -180,8 +180,14 @@ function stopMusic() {
 function getMusic() {
     document.getElementById("btnLoad").disabled = "true";
     document.getElementById("btnLoad").innerHTML = "Loading...";
-    trackObject = getTrackFromPK(document.getElementById("selTrack").value);
-    audioTrack = trackObject.fields.sound_file;
+    document.getElementById("pError").innerHTML = "";
+    if (typeof trackObject != 'undefined') { // i.e. couldn't find the pk i.e not a db elt-must be upload
+        trackObject = getTrackFromPK(document.getElementById("selTrack").value);
+        audioTrack = trackObject.fields.sound_file;
+    }
+    else {
+        audioTrack = document.getElementById("fileOpt").value;
+    }
     document.getElementById("txtRatio").disabled = true;
     document.getElementById("txtStart").disabled = true;
     document.getElementById("txtEnd").disabled = true;
@@ -199,6 +205,7 @@ function getMusic() {
         document.getElementById("btnLoad").innerHTML = "Load";
     }
     else {
+        //TODO: use filereader instead of fetch on upload
         fetch(audioTrack)
             .then(response => response.arrayBuffer())
             .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
@@ -213,9 +220,13 @@ function getMusic() {
             .catch(e => 
             {
                 document.getElementById("pError").innerHTML = "Error loading track. Could not download.";
-                console.error(e);
+                document.getElementById("txtRatio").disabled = false;
+                document.getElementById("txtStart").disabled = false;
+                document.getElementById("txtEnd").disabled = false;
+                document.getElementById("selTrack").disabled = false;
                 document.getElementById("btnLoad").disabled = false;
                 document.getElementById("btnLoad").innerHTML = "Load";
+                console.error(e);
             })
     }
 }
@@ -225,8 +236,23 @@ function getMusic() {
  * to the recommended value for the track selected in selTrack
  */ 
 function selectChange(element) {
+    let val = document.getElementById("selTrack").value;
     trackObject = getTrackFromPK(document.getElementById("selTrack").value);
-    document.getElementById("txtRatio").value = trackObject.fields.recommended_ratio;
-    document.getElementById("txtStart").value = trackObject.fields.recommended_start_time;
-    document.getElementById("txtEnd").value = trackObject.fields.recommended_end_time;
+    if (typeof trackObject != 'undefined') { // i.e. couldn't find the pk i.e not a db elt-must be upload
+        document.getElementById("txtRatio").value = trackObject.fields.recommended_ratio;
+        document.getElementById("txtStart").value = trackObject.fields.recommended_start_time;
+        document.getElementById("txtEnd").value = trackObject.fields.recommended_end_time;
+        document.getElementById("txtFile").innerHTML = "";
+    }
+    else {
+        document.getElementById("fileOpt").click()
+        document.getElementById("txtFile").innerHTML = "";
+        document.getElementById("txtRatio").value = 0;
+        document.getElementById("txtStart").value = 0;
+        document.getElementById("txtEnd").value = 0;
+    }
+}
+
+function fileChosen() {
+        document.getElementById("txtFile").innerHTML = "File: " + document.getElementById("fileOpt").files[0].name;
 }
