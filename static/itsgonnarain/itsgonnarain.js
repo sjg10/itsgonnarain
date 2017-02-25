@@ -171,7 +171,9 @@ function stopMusic() {
 }
 
 /**
- * TODO: comment
+ * Toggle the form input, disabled/enabling the fields.
+ * @param {Boolean} Enable (true) or disable input
+ * @param {String} Optional string for the load button if disabling
  */
 function toggleEnableInput(enable = true, loadButtonString = "Loading...")
 {
@@ -236,7 +238,7 @@ function getMusic() {
  * Update the txtRatio, txtStartTime and txtEndTime values
  * to the recommended value for the track selected in selTrack
  */ 
-function selectChange(element) {
+function selectChange() {
     let val = document.getElementById("selTrack").value;
     trackObject = getTrackFromPK(document.getElementById("selTrack").value);
     if (typeof trackObject != 'undefined') { // i.e. couldn't find the pk i.e not a db elt-must be upload
@@ -254,6 +256,9 @@ function selectChange(element) {
     }
 }
 
+/**
+ * Event handler when a file is chosen to update the associated text.
+ */
 function fileChosen() {
         document.getElementById("txtFile").innerHTML = "File: " + document.getElementById("fileOpt").files[0].name;
 }
