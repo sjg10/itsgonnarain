@@ -16,11 +16,11 @@ def create_wav(file_name, seconds):
     HERTZ = 440
     RATE = 44100
     FRAMES = RATE * seconds
-    MULTIPLIER = (2*math.pi) / RATE
-    VOLUME = 2
+    OMEGA = (2*math.pi) / RATE
+    VOLUME = 20000
     noise = wave.open(file_name,'w')
-    noise.setparams((1,1,44100, 0, 'NONE', 'not compressed'));
-    values = ''.join([struct.pack('h', VOLUME * math.sin(i * MULTIPLIER * hertz)) for i in range(0,(FRAMES))])
+    noise.setparams((1, 2, RATE, 0, 'NONE', 'not compressed'));
+    values = ''.join([struct.pack('h', VOLUME * math.sin(i * OMEGA * HERTZ)) for i in range(0,(FRAMES))])
     noise.writeframes(values)
     noise.close()
 
@@ -28,8 +28,8 @@ def create_track(name, recommended_start_time, recommended_end_time, recommended
     """
     Add a new track object to the Track model, a wav file will be created at file_name. file_name must be within MEDIA_ROOT.
     """
-    create_wav(file_name, 10, 440)
-    with open(file_name) as f:
+    create_wav(file_name, 10)
+    with open(file_name,'rb') as f:
         return models.Track.objects.create(name = name, recommended_start_time = recommended_start_time, recommended_end_time = recommended_end_time, recommended_ratio = recommended_ratio, sound_file = File(f));
 
 class BasicTests(TestCase):
@@ -39,6 +39,7 @@ class BasicTests(TestCase):
         and set MEDIA_ROOT to it to ensure they are within the project.
         """
         self.tempdir = tempfile.mkdtemp()
+        print "Creating temp dir " + self.tempdir
         settings.MEDIA_ROOT = self.tempdir
 
     def test_create_entry(self):
