@@ -18,7 +18,6 @@ class JSONWithURLSerializer(JSONSerializer):
     """
     def handle_field(self, obj, field):
         value = field.value_from_object(obj)
-        print value
         if isinstance(field, models.FileField) and hasattr(value, 'url'):
             self._current[field.name] = value.url
         else:
