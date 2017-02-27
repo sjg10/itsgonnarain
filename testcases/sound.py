@@ -26,11 +26,14 @@ def create_wav(file_name, seconds):
     noise.writeframes(values)
     noise.close()
 
-def create_track(name, recommended_start_time, recommended_end_time, recommended_ratio, file_name):
+def create_track(name, recommended_start_time, recommended_end_time, recommended_ratio, file_name, create_new_track = True):
     """
-    Add a new track object to the Track model, a wav file will be created at file_name. file_name must be within MEDIA_ROOT.
+    Add a new track object to the Track model, a wav file will be created at file_name unless create_new_track is False, and
+    a preexisting file will be assumed.
+    file_name must be within MEDIA_ROOT.
     """
-    create_wav(file_name, 10)
+    if create_new_track:
+        create_wav(file_name, 10)
     with open(file_name,'rb') as f:
         q = QueryDict(mutable=True)
         q['name'] = name
@@ -48,7 +51,6 @@ class BasicTests(TestCase):
         and set MEDIA_ROOT to it to ensure they are within the project.
         """
         self.tempdir = tempfile.mkdtemp()
-        print "Creating temp dir " + self.tempdir
         settings.MEDIA_ROOT = self.tempdir
 
     def test_create_entry(self):
@@ -58,3 +60,14 @@ class BasicTests(TestCase):
         self.assertEqual(len(models.Track.objects.all()), 0)
         create_track("one", 0, 5, 2, self.tempdir + "/one.wav");
         self.assertEqual(len(models.Track.objects.all()), 1)
+
+    def test_create_good_ratio(self):
+        """
+        Test to see if ratios are well verified
+        """
+        file_name = self.tempdir + "/one.wav"
+        create_track("one", 0, 5, 2, file_name) # Definitely good
+        create_track("two", 0, 5, 1, file_name, create_new_track = False); # Border case
+        # Note validation creates ValidationErrors, but the save in create_track recasts them to ValueError
+        with self.assertRaises(ValueError):
+            create_track("three", 0, 5, 0.5, file_name, create_new_track = False); # False case
