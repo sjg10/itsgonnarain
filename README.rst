@@ -44,6 +44,6 @@ Visit http://itsgonnarain.gonshaw.com for an example usage of this app.
 Tasks
 -----
 
-- Add admin model for input checking and prettyness on admin
-- Add checking for inputs on runtime too
+- Add verification to TrackForm for sound
+- Get runtime clientside verification to inherit these checks too
 - Pretty-ify

@@ -1,9 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.http import QueryDict
 
 import datetime
 from django.utils import timezone
 from .. import models
+from .. import forms
 from django.conf import settings
 
 import wave,struct,math, tempfile
@@ -30,7 +32,14 @@ def create_track(name, recommended_start_time, recommended_end_time, recommended
     """
     create_wav(file_name, 10)
     with open(file_name,'rb') as f:
-        return models.Track.objects.create(name = name, recommended_start_time = recommended_start_time, recommended_end_time = recommended_end_time, recommended_ratio = recommended_ratio, sound_file = File(f));
+        q = QueryDict(mutable=True)
+        q['name'] = name
+        q['recommended_start_time'] = recommended_start_time
+        q['recommended_end_time'] = recommended_end_time
+        q['recommended_ratio'] = recommended_ratio
+        q['file_name'] = f
+        t = forms.TrackForm(q)
+        t.save()
 
 class BasicTests(TestCase):
     def setUp(self):
